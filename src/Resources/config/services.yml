@@ -1,3 +1,6 @@
+# https://symfony.com/doc/current/service_container/3.3-di-changes.html
+# https://symfony.com/doc/current/service_container/autowiring.html
+
 services:
   codecloud_shopify.store_manager:
       synthetic: true
@@ -12,6 +15,7 @@ services:
           - "@codecloud_shopify.store_manager"
           - "@event_dispatcher"
           - "@codecloud_shopify.signer"
+      public: true
 
   codecloud_shopify.controller.webhooks:
       class: CodeCloud\Bundle\ShopifyBundle\Controller\WebhookController
@@ -41,6 +45,8 @@ services:
   codecloud_shopify.http.client_factory:
       public: false
       class: CodeCloud\Bundle\ShopifyBundle\Api\HttpClientFactory
+
+  CodeCloud\Bundle\ShopifyBundle\Api\ShopifyApiFactory: "@codecloud_shopify.shopify_api_factory"
 
   codecloud_shopify.shopify_api_factory:
       class: CodeCloud\Bundle\ShopifyBundle\Api\ShopifyApiFactory
