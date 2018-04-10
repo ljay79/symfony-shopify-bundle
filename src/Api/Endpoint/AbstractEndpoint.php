@@ -119,6 +119,18 @@ abstract class AbstractEndpoint
      */
     protected function processPaged(RequestInterface $request, $rootElement, array $params = array())
     {
+        $requestUrl = $request->getUri();
+
+        $parts = parse_url($requestUrl);
+
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+            if (array_key_exists('limit', $query) || array_key_exists('page', $query)) {
+                $response = $this->process($request->withUri(new Uri($requestUrl)));
+                return $response->get($rootElement);
+            }
+        }
+
         if (empty($params['page'])) {
             $params['page'] = 1;
         }
@@ -130,7 +142,6 @@ abstract class AbstractEndpoint
         $allResults = array();
 
         do {
-            $requestUrl = $request->getUri();
             $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
 
             $pagedRequest = $request->withUri(new Uri($requestUrl . $paramDelim . http_build_query($params)));
