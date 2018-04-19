@@ -22,6 +22,7 @@ services:
       arguments:
           - "@codecloud_shopify.store_manager"
           - "@event_dispatcher"
+      public: true
 
   codecloud_shopify.command.webhooks:
       class: CodeCloud\Bundle\ShopifyBundle\Command\WebhooksCommand
