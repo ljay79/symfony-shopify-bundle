@@ -33,11 +33,13 @@ class ProductEndpoint extends AbstractEndpoint
 
     /**
      * @param int $productId
+     * @param array $fields
      * @return GenericResource
      */
-    public function findOne($productId)
+    public function findOne($productId, array $fields = array())
     {
-        $request = new GetJson('/admin/products/' . $productId . '.json');
+        $params = $fields ? array('fields' => implode(',', $fields)) : array();
+        $request = new GetJson('/admin/products/' . $productId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('product'));
     }
