@@ -37,15 +37,16 @@ class WebhookController
      */
     public function handleWebhook(Request $request)
     {
-        $topic     = $request->query->get('topic');
-        $storeName = $request->query->get('store');
+        $topic     = $request->query->get('topic') ?: $request->headers->get('x-shopify-topic');
+        $storeName = $request->query->get('store') ?: $request->headers->get('x-shopify-shop-domain');
+        // $hmac      = $request->headers->get('x-shopify-hmac-sha256');
 
         if (!$topic || !$storeName) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Request is missing required parameters: "topic", "store" or headers: "x-shopify-topic", "x-shopify-shop-domain"');
         }
 
         if (!$this->storeManager->storeExists($storeName)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Store does not exist');
         }
 
         $payload = \GuzzleHttp\json_decode($request->getContent(), true);
