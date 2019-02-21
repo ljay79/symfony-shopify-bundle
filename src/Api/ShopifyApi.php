@@ -14,6 +14,7 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomCollectionEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomerAddressEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomerEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomerSavedSearchEndpoint;
+use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\DraftOrderEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\EventEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\FulFillmentEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\FulfillmentServiceEndpoint;
@@ -54,6 +55,7 @@ use GuzzleHttp\ClientInterface;
  * @property CustomerAddressEndpoint CustomerAddress
  * @property CustomerEndpoint Customer
  * @property CustomerSavedSearchEndpoint SavedSearch
+ * @property DraftOrderEndpoint DraftOrder
  * @property EventEndpoint Event
  * @property FulFillmentEndpoint Fulfillment
  * @property FulfillmentServiceEndpoint FulfillmentService
@@ -101,6 +103,7 @@ class ShopifyApi
         'CustomerAddress' => CustomerAddressEndpoint::class,
         'Customer' => CustomerEndpoint::class,
         'SavedSearch' => CustomerSavedSearchEndpoint::class,
+        'DraftOrder' => DraftOrderEndpoint::class,
         'Event' => EventEndpoint::class,
         'Fulfillment' => FulFillmentEndpoint::class,
         'FulfillmentService' => FulfillmentServiceEndpoint::class,
