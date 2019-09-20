@@ -15,7 +15,7 @@ class DiscountCodeEndpoint extends AbstractEndpoint
      */
     public function findAll($priceRuleId)
     {
-        $request = new GetJson('/admin/price_rules/' . $priceRuleId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '.json');
         $response = $this->sendPaged($request, 'discount_codes');
         return $this->createCollection($response);
     }
@@ -27,7 +27,7 @@ class DiscountCodeEndpoint extends AbstractEndpoint
      */
     public function findOne($priceRuleId, $discountCodeId)
     {
-        $request = new GetJson('/admin/price_rules/' . $priceRuleId . '/discount_codes/' . $discountCodeId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '/discount_codes/' . $discountCodeId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('price_rule'));
     }
@@ -38,7 +38,7 @@ class DiscountCodeEndpoint extends AbstractEndpoint
      */
     public function lookup($code)
     {
-        $request = new GetJson('/admin/discount_codes/lookup.json', array('code' => $code));
+        $request = new GetJson('/admin/api/' . $this->version . '/discount_codes/lookup.json', array('code' => $code));
         $response = $this->send($request);
         return $response->getHttpResponse()->getHeader('Location'); // @todo
     }
@@ -50,7 +50,7 @@ class DiscountCodeEndpoint extends AbstractEndpoint
      */
     public function create($priceRuleId, GenericResource $discountCode)
     {
-        $request = new PostJson('/admin/price_rules/' . $priceRuleId . '/discount_codes.json', array('discount_code' => $discountCode->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '/discount_codes.json', array('discount_code' => $discountCode->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('discount_code'));
     }
@@ -63,7 +63,7 @@ class DiscountCodeEndpoint extends AbstractEndpoint
      */
     public function update($priceRuleId, $discountCodeId, GenericResource $discountCode)
     {
-        $request = new PutJson('/admin/price_rules/' . $priceRuleId . '/discount_codes/' . $discountCodeId . '.json', array('discount_code' => $discountCode->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '/discount_codes/' . $discountCodeId . '.json', array('discount_code' => $discountCode->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('discount_code'));
     }
@@ -74,7 +74,7 @@ class DiscountCodeEndpoint extends AbstractEndpoint
      */
     public function delete($priceRuleId, $discountCodeId)
     {
-        $request = new DeleteParams('/admin/price_rules/' . $priceRuleId . '/discount_codes/' . $discountCodeId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '/discount_codes/' . $discountCodeId . '.json');
         $this->send($request);
     }
 

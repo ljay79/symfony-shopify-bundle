@@ -19,11 +19,17 @@ abstract class AbstractEndpoint
     private $client;
 
     /**
+     * @var string
+     */
+    protected $version;
+
+    /**
      * @param ClientInterface $client
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, string $version)
     {
         $this->client = $client;
+        $this->version = $version;
     }
 
     /**
@@ -125,14 +131,10 @@ abstract class AbstractEndpoint
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
-            if (array_key_exists('limit', $query) || array_key_exists('page', $query)) {
+            if (array_key_exists('limit', $query)) {
                 $response = $this->process($request->withUri(new Uri($requestUrl)));
                 return $response->get($rootElement);
             }
-        }
-
-        if (empty($params['page'])) {
-            $params['page'] = 1;
         }
 
         if (empty($params['limit'])) {
@@ -141,21 +143,27 @@ abstract class AbstractEndpoint
 
         $allResults = array();
 
+        $requestUrl = $request->getUri();
+        $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
+        $nextLink = $request->withUri(new Uri($requestUrl . $paramDelim . http_build_query($params)));
+
         do {
-            $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
-
-            $pagedRequest = $request->withUri(new Uri($requestUrl . $paramDelim . http_build_query($params)));
-
-            $response = $this->process($pagedRequest);
+            $response = $this->process($nextLink);
 
             $root = $response->get($rootElement);
+
+            $link = $response->getHttpResponse()->getHeaderLine('Link');
+            if (preg_match('/<(.*)>; rel="next"/', $link, $matchedLink)) {
+                $nextLink = $request->withUri(new Uri($matchedLink[1]));
+            } else {
+                $nextLink = null;
+            }
 
             if ($pageResults = empty($root) ? false : $root) {
                 $allResults = array_merge($allResults, $pageResults);
             }
 
-            $params['page']++;
-        } while ($pageResults);
+        } while ($nextLink);
 
         return $allResults;
     }

@@ -16,7 +16,7 @@ class ProductImageEndpoint extends AbstractEndpoint
      */
     public function findByProduct($productId, array $query = array())
     {
-        $request = new GetJson('/admin/products/' . $productId . '/images.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/images.json', $query);
         $response = $this->send($request);
         return $this->createCollection($response->get('images'));
     }
@@ -28,7 +28,7 @@ class ProductImageEndpoint extends AbstractEndpoint
      */
     public function countByProduct($productId, array $query = array())
     {
-        $request = new GetJson('/admin/products/' . $productId . '/images/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/images/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -41,7 +41,7 @@ class ProductImageEndpoint extends AbstractEndpoint
     public function findOne($productId, $productImageId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/products/' . $productId . '/images/' . $productImageId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/images/' . $productImageId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('image'));
     }
@@ -53,7 +53,7 @@ class ProductImageEndpoint extends AbstractEndpoint
      */
     public function create($productId, GenericResource $productImage)
     {
-        $request = new PostJson('/admin/products/' . $productId . '/images.json', array('image' => $productImage->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/products/' . $productId . '/images.json', array('image' => $productImage->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('image'));
     }
@@ -66,7 +66,7 @@ class ProductImageEndpoint extends AbstractEndpoint
      */
     public function update($productId, $productImageId, GenericResource $productImage)
     {
-        $request = new PutJson('/admin/products/' . $productId . '/images/' . $productImageId . '.json', array('image' => $productImage->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/products/' . $productId . '/images/' . $productImageId . '.json', array('image' => $productImage->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('image'));
     }
@@ -77,7 +77,7 @@ class ProductImageEndpoint extends AbstractEndpoint
      */
     public function delete($productId, $productImageId)
     {
-        $request = new DeleteParams('/admin/products/' . $productId . '/images/' . $productImageId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/products/' . $productId . '/images/' . $productImageId . '.json');
         $this->send($request);
     }
 }

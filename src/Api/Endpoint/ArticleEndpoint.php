@@ -16,7 +16,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function findByBlog($blogId, array $query = array())
     {
-        $request = new GetJson('/admin/blogs/' . $blogId . '/articles.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '/articles.json', $query);
         $response = $this->sendPaged($request, 'articles');
         return $this->createCollection($response);
     }
@@ -28,7 +28,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function countByBlog($blogId, array $query = array())
     {
-        $request = new GetJson('/admin/blogs/' . $blogId . '/articles/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '/articles/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -40,7 +40,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function findOne($blogId, $articleId)
     {
-        $request = new GetJson('/admin/blogs/' . $blogId . '/articles/' . $articleId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '/articles/' . $articleId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('article'));
     }
@@ -52,7 +52,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function create($blogId, GenericResource $article)
     {
-        $request = new PostJson('/admin/blogs/' . $blogId . '/articles.json', array('article' => $article->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '/articles.json', array('article' => $article->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('article'));
     }
@@ -65,7 +65,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function update($blogId, $articleId, GenericResource $article)
     {
-        $request = new PutJson('/admin/blogs/' . $blogId . '/articles/' . $articleId . '.json', array('article' => $article->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '/articles/' . $articleId . '.json', array('article' => $article->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('article'));
     }
@@ -76,7 +76,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function delete($blogId, $articleId)
     {
-        $request = new DeleteParams('/admin/blogs/' . $blogId . '/articles/' . $articleId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/blogs/' . $blogId . '/articles/' . $articleId . '.json');
         $this->send($request);
     }
 
@@ -85,7 +85,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function findAllAuthors()
     {
-        $request = new GetJson('/admin/articles/authors.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/articles/authors.json');
         $response = $this->send($request);
         return $response->get('authors');
     }
@@ -96,7 +96,7 @@ class ArticleEndpoint extends AbstractEndpoint
      */
     public function findAllTags(array $query = array())
     {
-        $request = new GetJson('/admin/articles/tags.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/articles/tags.json', $query);
         $response = $this->send($request);
         return $response->get('tags');
     }

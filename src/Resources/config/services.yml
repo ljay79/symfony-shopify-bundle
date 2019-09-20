@@ -54,6 +54,7 @@ services:
       arguments:
           - "@codecloud_shopify.store_manager"
           - "@codecloud_shopify.http.client_factory"
+          - "2019-10"
 
   codecloud_shopify.signer:
       public: false

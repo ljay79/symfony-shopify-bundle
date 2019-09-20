@@ -15,7 +15,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/draft_orders.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/draft_orders.json', $query);
         $response = $this->sendPaged($request, 'draft_orders');
         return $this->createCollection($response);
     }
@@ -28,7 +28,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
     public function findOne($orderId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/draft_orders/' . $orderId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('draft_order'));
     }
@@ -39,7 +39,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/draft_orders/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/draft_orders/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -50,7 +50,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $order)
     {
-        $request = new PostJson('/admin/draft_orders.json', array('draft_order' => $order->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/draft_orders.json', array('draft_order' => $order->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('draft_order'));
     }
@@ -62,7 +62,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
      */
     public function update($orderId, GenericResource $order)
     {
-        $request = new PutJson('/admin/draft_orders/' . $orderId . '.json', array('draft_order' => $order->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '.json', array('draft_order' => $order->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('draft_order'));
     }
@@ -72,7 +72,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
      */
     public function delete($orderId)
     {
-        $request = new DeleteParams('/admin/draft_orders/' . $orderId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '.json');
         $this->send($request);
     }
 
@@ -81,7 +81,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
      */
     public function sendInvoice($orderId)
     {
-        $request = new PostJson('/admin/draft_orders/' . $orderId . '/send_invoice.json');
+        $request = new PostJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '/send_invoice.json');
         $this->send($request);
     }
 
@@ -91,7 +91,7 @@ class DraftOrderEndpoint extends AbstractEndpoint
      */
     public function complete($orderId, bool $paymentPending = false)
     {
-        $request = new PutJson('/admin/draft_orders/' . $orderId . '/complete.json', array('payment_pending' => $paymentPending ? 'true' : 'false'));
+        $request = new PutJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '/complete.json', array('payment_pending' => $paymentPending ? 'true' : 'false'));
         $this->send($request);
     }
 }

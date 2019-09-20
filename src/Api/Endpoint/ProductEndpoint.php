@@ -15,7 +15,7 @@ class ProductEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/products.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/products.json', $query);
         $response = $this->sendPaged($request, 'products');
         return $this->createCollection($response);
     }
@@ -26,7 +26,7 @@ class ProductEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/products/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/products/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -39,7 +39,7 @@ class ProductEndpoint extends AbstractEndpoint
     public function findOne($productId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/products/' . $productId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('product'));
     }
@@ -50,7 +50,7 @@ class ProductEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $product)
     {
-        $request = new PostJson('/admin/products.json', array('product' => $product->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/products.json', array('product' => $product->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('product'));
     }
@@ -62,7 +62,7 @@ class ProductEndpoint extends AbstractEndpoint
      */
     public function update($productId, GenericResource $product)
     {
-        $request = new PutJson('/admin/products/' . $productId . '.json', array('product' => $product->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/products/' . $productId . '.json', array('product' => $product->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('product'));
     }
@@ -72,7 +72,7 @@ class ProductEndpoint extends AbstractEndpoint
      */
     public function delete($productId)
     {
-        $request = new DeleteParams('/admin/products/' . $productId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/products/' . $productId . '.json');
         $this->send($request);
     }
 }

@@ -15,7 +15,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/redirects.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/redirects.json', $query);
         $response = $this->sendPaged($request, 'redirects');
         return $this->createCollection($response);
     }
@@ -26,7 +26,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/redirects/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/redirects/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -39,7 +39,7 @@ class RedirectEndpoint extends AbstractEndpoint
     public function findOne($redirectId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/redirects/' . $redirectId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/redirects/' . $redirectId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('redirect'));
     }
@@ -50,7 +50,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $redirect)
     {
-        $request = new PostJson('/admin/redirects.json', array('redirect' => $redirect->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/redirects.json', array('redirect' => $redirect->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('redirect'));
     }
@@ -62,7 +62,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function update($redirectId, GenericResource $redirect)
     {
-        $request = new PutJson('/admin/redirects/' . $redirectId . '.json', array('redirect' => $redirect->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/redirects/' . $redirectId . '.json', array('redirect' => $redirect->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('redirect'));
     }
@@ -72,7 +72,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function delete($redirectId)
     {
-        $request = new DeleteParams('/admin/redirects/' . $redirectId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/redirects/' . $redirectId . '.json');
         $this->send($request);
     }
 }

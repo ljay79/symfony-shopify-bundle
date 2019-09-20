@@ -11,7 +11,7 @@ class CheckoutEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/checkouts.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/checkouts.json', $query);
         $response = $this->sendPaged($request, 'checkouts');
         return $this->createCollection($response);
     }
@@ -22,7 +22,7 @@ class CheckoutEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/checkouts/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/checkouts/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }

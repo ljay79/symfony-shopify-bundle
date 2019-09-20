@@ -13,7 +13,7 @@ class TransactionEndpoint extends AbstractEndpoint
      */
     public function findByOrder($orderId, array $query = array())
     {
-        $request = new GetJson('/admin/orders/' . $orderId . '/transactions.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/transactions.json', $query);
         $response = $this->send($request);
         return $this->createCollection($response->get('transactions'));
     }
@@ -24,7 +24,7 @@ class TransactionEndpoint extends AbstractEndpoint
      */
     public function countByOrder($orderId)
     {
-        $request = new GetJson('/admin/orders/' . $orderId . '/transactions/count.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/transactions/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -38,7 +38,7 @@ class TransactionEndpoint extends AbstractEndpoint
     public function findOne($orderId, $transactionId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/orders/' . $orderId . '/transactions/' . $transactionId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/transactions/' . $transactionId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('transaction'));
     }
@@ -55,7 +55,7 @@ class TransactionEndpoint extends AbstractEndpoint
             $params['amount'] = (float)$amount;
         }
 
-        $request = new PostJson('/admin/orders/' . $orderId . '/transactions.json', array('transaction' => $params));
+        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/transactions.json', array('transaction' => $params));
         $this->send($request);
     }
 }

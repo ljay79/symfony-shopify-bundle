@@ -11,7 +11,7 @@ class EventEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/events.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/events.json', $query);
         $response = $this->sendPaged($request, 'events');
         return $this->createCollection($response);
     }
@@ -22,7 +22,7 @@ class EventEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/events/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/events/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -33,7 +33,7 @@ class EventEndpoint extends AbstractEndpoint
      */
     public function findOne($eventId)
     {
-        $request = new GetJson('/admin/events/' . $eventId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/events/' . $eventId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('event'));
     }

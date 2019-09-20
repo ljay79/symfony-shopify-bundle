@@ -15,7 +15,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/customers.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/customers.json', $query);
         $response = $this->sendPaged($request, 'customers');
         return $this->createCollection($response);
     }
@@ -28,7 +28,7 @@ class CustomerEndpoint extends AbstractEndpoint
     public function findOrdersForCustomer($customerId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/customers/' . $customerId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/customers/' . $customerId . '.json', $params);
         $response = $this->sendPaged($request, 'customers');
         return $this->createCollection($response);
     }
@@ -39,7 +39,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function search(array $query = array())
     {
-        $request = new GetJson('/admin/customers/search.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/customers/search.json', $query);
         $response = $this->sendPaged($request, 'customers');
         return $this->createCollection($response);
     }
@@ -49,7 +49,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function countAll()
     {
-        $request = new GetJson('/admin/customers/count.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/customers/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -60,7 +60,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function findOne($customerId)
     {
-        $request = new GetJson('/admin/customers/' . $customerId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/customers/' . $customerId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('customer'));
     }
@@ -71,7 +71,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $customer)
     {
-        $request = new PostJson('/admin/customers.json', array('customer' => $customer->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/customers.json', array('customer' => $customer->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer'));
     }
@@ -83,7 +83,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function update($customerId, GenericResource $customer)
     {
-        $request = new PutJson('/admin/customers/' . $customerId . '.json', array('customer' => $customer->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/customers/' . $customerId . '.json', array('customer' => $customer->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer'));
     }
@@ -93,7 +93,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function delete($customerId)
     {
-        $request = new DeleteParams('/admin/customers/' . $customerId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/customers/' . $customerId . '.json');
         $this->send($request);
     }
 }

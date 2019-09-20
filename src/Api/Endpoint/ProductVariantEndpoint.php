@@ -16,7 +16,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function findByProduct($productId, array $query = array())
     {
-        $request = new GetJson('/admin/products/' . $productId . '/variants.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants.json', $query);
         $response = $this->sendPaged($request, 'variants');
         return $this->createCollection($response);
     }
@@ -27,7 +27,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function countByProduct($productId)
     {
-        $request = new GetJson('/admin/products/' . $productId . '/variants/count.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -38,7 +38,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function findOne($variantId)
     {
-        $request = new GetJson('/admin/variants/' . $variantId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/variants/' . $variantId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('variant'));
     }
@@ -50,7 +50,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function create($productId, GenericResource $variant)
     {
-        $request = new PostJson('/admin/products/' . $productId . '/variants.json', array('variant' => $variant->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants.json', array('variant' => $variant->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('variant'));
     }
@@ -62,7 +62,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function update($variantId, GenericResource $variant)
     {
-        $request = new PutJson('/admin/variants/' . $variantId . '.json', array('variant' => $variant->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/variants/' . $variantId . '.json', array('variant' => $variant->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('variant'));
     }
@@ -72,7 +72,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function delete($variantId)
     {
-        $request = new DeleteParams('/admin/variants/' . $variantId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/variants/' . $variantId . '.json');
         $this->send($request);
     }
 }

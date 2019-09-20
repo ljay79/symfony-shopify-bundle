@@ -15,7 +15,7 @@ class WebhookEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/webhooks.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/webhooks.json', $query);
         $response = $this->sendPaged($request, 'webhooks');
         return $this->createCollection($response);
     }
@@ -26,7 +26,7 @@ class WebhookEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/webhooks/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/webhooks/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -39,7 +39,7 @@ class WebhookEndpoint extends AbstractEndpoint
     public function findOne($webhookId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/webhooks/' . $webhookId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/webhooks/' . $webhookId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('webhook'));
     }
@@ -50,7 +50,7 @@ class WebhookEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $webhook)
     {
-        $request = new PostJson('/admin/webhooks.json', array('webhook' => $webhook->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/webhooks.json', array('webhook' => $webhook->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('webhook'));
     }
@@ -61,7 +61,7 @@ class WebhookEndpoint extends AbstractEndpoint
      */
     public function update($webhookId, GenericResource $webhook)
     {
-        $request = new PutJson('/admin/webhooks/' . $webhookId . '.json', array('webhook' => $webhook->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/webhooks/' . $webhookId . '.json', array('webhook' => $webhook->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('webhook'));
     }
@@ -71,7 +71,7 @@ class WebhookEndpoint extends AbstractEndpoint
      */
     public function delete($webhookId)
     {
-        $request = new DeleteParams('/admin/webhooks/' . $webhookId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/webhooks/' . $webhookId . '.json');
         $this->send($request);
     }
 }

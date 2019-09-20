@@ -15,7 +15,7 @@ class FulfillmentServiceEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array('scope' => 'all'))
     {
-        $request = new GetJson('/admin/fulfillment_services.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/fulfillment_services.json', $query);
         $response = $this->send($request);
         return $this->createCollection($response->get('fulfillment_services'));
     }
@@ -26,7 +26,7 @@ class FulfillmentServiceEndpoint extends AbstractEndpoint
      */
     public function findOne($fulfillmentServiceId)
     {
-        $request = new GetJson('/admin/fulfillment_services/' . $fulfillmentServiceId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/fulfillment_services/' . $fulfillmentServiceId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('fulfillment_service'));
     }
@@ -37,7 +37,7 @@ class FulfillmentServiceEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $fulfillmentService)
     {
-        $request = new PostJson('/admin/fulfillment_services.json', array('fulfillment_service' => $fulfillmentService->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/fulfillment_services.json', array('fulfillment_service' => $fulfillmentService->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('fulfillment_service'));
     }
@@ -49,7 +49,7 @@ class FulfillmentServiceEndpoint extends AbstractEndpoint
      */
     public function update($fulfillmentServiceId, GenericResource $fulfillmentService)
     {
-        $request = new PutJson('/admin/fulfillment_services/' . $fulfillmentServiceId . '.json', array('fulfillment_service' => $fulfillmentService->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/fulfillment_services/' . $fulfillmentServiceId . '.json', array('fulfillment_service' => $fulfillmentService->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('fulfillment_service'));
     }
@@ -59,7 +59,7 @@ class FulfillmentServiceEndpoint extends AbstractEndpoint
      */
     public function delete($fulfillmentServiceId)
     {
-        $request = new DeleteParams('/admin/fulfillment_services/' . $fulfillmentServiceId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/fulfillment_services/' . $fulfillmentServiceId . '.json');
         $this->send($request);
     }
 }

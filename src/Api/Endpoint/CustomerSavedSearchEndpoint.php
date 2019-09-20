@@ -15,7 +15,7 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/customer_saved_searches.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/customer_saved_searches.json', $query);
         $response = $this->sendPaged($request, 'customer_saved_searches');
         return $this->createCollection($response);
     }
@@ -26,7 +26,7 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/customer_saved_searches/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/customer_saved_searches/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -39,7 +39,7 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
     public function findOne($savedSearchId, array $fields = array())
     {
         $params = $fields ? array('fields' => $fields) : array();
-        $request = new GetJson('/admin/customer_saved_searches/' . $savedSearchId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/customer_saved_searches/' . $savedSearchId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('customer_saved_search'));
     }
@@ -50,7 +50,7 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
      */
     public function findCustomersForSavedSearch($savedSearchId, array $query = array())
     {
-        $request = new GetJson('/admin/customer_saved_searches/' . $savedSearchId . '/customers.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/customer_saved_searches/' . $savedSearchId . '/customers.json', $query);
         $response = $this->sendPaged($request, 'customers');
         return $this->createCollection($response);
     }
@@ -61,7 +61,7 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $savedSearch)
     {
-        $request = new PostJson('/admin/customer_saved_searches.json', array('customer_saved_search' => $savedSearch->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/customer_saved_searches.json', array('customer_saved_search' => $savedSearch->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer_saved_search'));
     }
@@ -73,7 +73,7 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
      */
     public function update($savedSearchId, GenericResource $savedSearch)
     {
-        $request = new PutJson('/admin/customer_saved_searches/' . $savedSearchId . '.json', array('customer_saved_search' => $savedSearch->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/customer_saved_searches/' . $savedSearchId . '.json', array('customer_saved_search' => $savedSearch->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer_saved_search'));
     }
@@ -83,7 +83,7 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
      */
     public function delete($savedSearchId)
     {
-        $request = new DeleteParams('/admin/customer_saved_searches/' . $savedSearchId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/customer_saved_searches/' . $savedSearchId . '.json');
         $this->send($request);
     }
 }
