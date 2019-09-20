@@ -11,32 +11,35 @@ class MetafieldEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findStoreMetafields(array $query = array())
+    public function findStoreMetafields(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/metafields.json', $query);
-        $response = $this->sendPaged($request, 'metafields');
+        $response = $this->sendPaged($request, 'metafields', $links);
         return $this->createCollection($response);
     }
 
     /**
      * @param int $productId
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findProductMetafields($productId, array $query = array())
+    public function findProductMetafields($productId, array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/metafields.json', $query);
-        $response = $this->sendPaged($request, 'metafields');
+        $response = $this->sendPaged($request, 'metafields', $links);
         return $this->createCollection($response);
     }
 
     /**
      * @param int $productImageId
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findProductImageMetafields($productImageId)
+    public function findProductImageMetafields($productImageId, array &$links = array())
     {
         $params = array(
             'metafield[owner_id]'       => $productImageId,
@@ -44,7 +47,7 @@ class MetafieldEndpoint extends AbstractEndpoint
         );
 
         $request = new GetJson('/admin/api/' . $this->version . '/metafields.json', $params);
-        $response = $this->sendPaged($request, 'metafields');
+        $response = $this->sendPaged($request, 'metafields', $links);
         return $this->createCollection($response);
     }
 

@@ -11,12 +11,13 @@ class CustomCollectionEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/custom_collections.json', $query);
-        $response = $this->sendPaged($request, 'custom_collections');
+        $response = $this->sendPaged($request, 'custom_collections', $links);
         return $this->createCollection($response);
     }
 

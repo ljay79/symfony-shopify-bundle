@@ -11,12 +11,13 @@ class FulFillmentEndpoint extends AbstractEndpoint
     /**
      * @param int $orderId
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findByOrder($orderId, array $query = array())
+    public function findByOrder($orderId, array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/fulfillments.json', $query);
-        $response = $this->sendPaged($request, 'fulfillments');
+        $response = $this->sendPaged($request, 'fulfillments', $links);
         return $this->createCollection($response);
     }
 

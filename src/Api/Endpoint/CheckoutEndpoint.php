@@ -7,12 +7,13 @@ class CheckoutEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericEntity[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/checkouts.json', $query);
-        $response = $this->sendPaged($request, 'checkouts');
+        $response = $this->sendPaged($request, 'checkouts', $links);
         return $this->createCollection($response);
     }
 

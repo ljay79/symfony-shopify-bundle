@@ -7,12 +7,13 @@ class EventEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericEntity[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/events.json', $query);
-        $response = $this->sendPaged($request, 'events');
+        $response = $this->sendPaged($request, 'events', $links);
         return $this->createCollection($response);
     }
 

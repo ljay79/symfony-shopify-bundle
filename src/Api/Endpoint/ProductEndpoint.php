@@ -11,12 +11,13 @@ class ProductEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/products.json', $query);
-        $response = $this->sendPaged($request, 'products');
+        $response = $this->sendPaged($request, 'products', $links);
         return $this->createCollection($response);
     }
 

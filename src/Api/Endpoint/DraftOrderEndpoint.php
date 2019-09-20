@@ -11,12 +11,13 @@ class DraftOrderEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/draft_orders.json', $query);
-        $response = $this->sendPaged($request, 'draft_orders');
+        $response = $this->sendPaged($request, 'draft_orders', $links);
         return $this->createCollection($response);
     }
 

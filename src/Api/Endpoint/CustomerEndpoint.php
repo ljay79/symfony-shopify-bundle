@@ -11,36 +11,39 @@ class CustomerEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/customers.json', $query);
-        $response = $this->sendPaged($request, 'customers');
+        $response = $this->sendPaged($request, 'customers', $links);
         return $this->createCollection($response);
     }
 
     /**
      * @param int $customerId
      * @param array $fields
+     * @param array $links
      * @return array|GenericResource[]
      */
-    public function findOrdersForCustomer($customerId, array $fields = array())
+    public function findOrdersForCustomer($customerId, array $fields = array(), array &$links = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
         $request = new GetJson('/admin/api/' . $this->version . '/customers/' . $customerId . '.json', $params);
-        $response = $this->sendPaged($request, 'customers');
+        $response = $this->sendPaged($request, 'customers', $links);
         return $this->createCollection($response);
     }
 
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function search(array $query = array())
+    public function search(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/customers/search.json', $query);
-        $response = $this->sendPaged($request, 'customers');
+        $response = $this->sendPaged($request, 'customers', $links);
         return $this->createCollection($response);
     }
 

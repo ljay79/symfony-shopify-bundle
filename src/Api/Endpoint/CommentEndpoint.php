@@ -10,12 +10,13 @@ class CommentEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/comments.json', $query);
-        $response = $this->sendPaged($request, 'comments');
+        $response = $this->sendPaged($request, 'comments', $links);
         return $this->createCollection($response);
     }
 

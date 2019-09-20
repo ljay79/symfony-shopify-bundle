@@ -10,12 +10,13 @@ class CollectEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/collects.json', $query);
-        $response = $this->sendPaged($request, 'collects');
+        $response = $this->sendPaged($request, 'collects', $links);
         return $this->createCollection($response);
     }
 

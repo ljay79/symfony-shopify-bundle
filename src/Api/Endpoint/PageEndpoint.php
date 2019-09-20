@@ -11,12 +11,13 @@ class PageEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericResource
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/pages.json', $query);
-        $response = $this->sendPaged($request, 'pages');
+        $response = $this->sendPaged($request, 'pages', $links);
         return $this->createCollection($response->get('pages'));
     }
 

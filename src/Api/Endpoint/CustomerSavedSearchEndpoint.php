@@ -11,12 +11,13 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/customer_saved_searches.json', $query);
-        $response = $this->sendPaged($request, 'customer_saved_searches');
+        $response = $this->sendPaged($request, 'customer_saved_searches', $links);
         return $this->createCollection($response);
     }
 
@@ -46,12 +47,13 @@ class CustomerSavedSearchEndpoint extends AbstractEndpoint
 
     /**
      * @param int $savedSearchId
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findCustomersForSavedSearch($savedSearchId, array $query = array())
+    public function findCustomersForSavedSearch($savedSearchId, array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/customer_saved_searches/' . $savedSearchId . '/customers.json', $query);
-        $response = $this->sendPaged($request, 'customers');
+        $response = $this->sendPaged($request, 'customers', $links);
         return $this->createCollection($response);
     }
 

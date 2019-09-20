@@ -12,12 +12,13 @@ class ArticleEndpoint extends AbstractEndpoint
     /**
      * @param int $blogId
      * @param array $query
+     * @param array $links
      * @return array
      */
-    public function findByBlog($blogId, array $query = array())
+    public function findByBlog($blogId, array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '/articles.json', $query);
-        $response = $this->sendPaged($request, 'articles');
+        $response = $this->sendPaged($request, 'articles', $links);
         return $this->createCollection($response);
     }
 

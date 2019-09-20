@@ -12,12 +12,13 @@ class ProductVariantEndpoint extends AbstractEndpoint
     /**
      * @param int $productId
      * @param array $query
+     * @param array $links
      * @return array|GenericResource[]
      */
-    public function findByProduct($productId, array $query = array())
+    public function findByProduct($productId, array $query = array(), array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants.json', $query);
-        $response = $this->sendPaged($request, 'variants');
+        $response = $this->sendPaged($request, 'variants', $links);
         return $this->createCollection($response);
     }
 

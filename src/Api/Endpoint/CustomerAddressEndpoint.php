@@ -11,12 +11,13 @@ class CustomerAddressEndpoint extends AbstractEndpoint
 {
     /**
      * @param int $customerId
+     * @param array $links
      * @return array
      */
-    public function findByCustomer($customerId)
+    public function findByCustomer($customerId, array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/customers/' . $customerId . '.json');
-        $response = $this->sendPaged($request, 'addresses');
+        $response = $this->sendPaged($request, 'addresses', $links);
         return $this->createCollection($response);
     }
 

@@ -11,12 +11,13 @@ class DiscountCodeEndpoint extends AbstractEndpoint
 {
     /**
      * @param int $priceRuleId
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findAll($priceRuleId)
+    public function findAll($priceRuleId, array &$links = array())
     {
         $request = new GetJson('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '.json');
-        $response = $this->sendPaged($request, 'discount_codes');
+        $response = $this->sendPaged($request, 'discount_codes', $links);
         return $this->createCollection($response);
     }
 
