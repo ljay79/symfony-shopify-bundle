@@ -11,7 +11,7 @@ class ShopEndpoint extends AbstractEndpoint
      */
     public function findOne()
     {
-        $response = $this->send(new GetJson('/admin/shop.json'));
+        $response = $this->send(new GetJson('/admin/api/' . $this->version . '/shop.json'));
         return $this->createEntity($response->get('shop'));
     }
 }

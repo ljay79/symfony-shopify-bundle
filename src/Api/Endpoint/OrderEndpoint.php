@@ -11,12 +11,13 @@ class OrderEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
-        $request = new GetJson('/admin/orders.json', $query);
-        $response = $this->sendPaged($request, 'orders');
+        $request = new GetJson('/admin/api/' . $this->version . '/orders.json', $query);
+        $response = $this->sendPaged($request, 'orders', $links);
         return $this->createCollection($response);
     }
 
@@ -28,7 +29,7 @@ class OrderEndpoint extends AbstractEndpoint
     public function findOne($orderId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/orders/' . $orderId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('order'));
     }
@@ -39,7 +40,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/orders/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/orders/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -50,7 +51,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $order)
     {
-        $request = new PostJson('/admin/orders.json', array('order' => $order->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/orders.json', array('order' => $order->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('order'));
     }
@@ -62,7 +63,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function update($orderId, GenericResource $order)
     {
-        $request = new PutJson('/admin/orders/' . $orderId . '.json', array('order' => $order->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/orders/' . $orderId . '.json', array('order' => $order->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('order'));
     }
@@ -72,7 +73,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function delete($orderId)
     {
-        $request = new DeleteParams('/admin/orders/' . $orderId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/orders/' . $orderId . '.json');
         $this->send($request);
     }
 
@@ -81,7 +82,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function close($orderId)
     {
-        $request = new PostJson('/admin/orders/' . $orderId . '/close.json');
+        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/close.json');
         $this->send($request);
     }
 
@@ -90,7 +91,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function open($orderId)
     {
-        $request = new PostJson('/admin/orders/' . $orderId . '/open.json');
+        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/open.json');
         $this->send($request);
     }
 
@@ -100,7 +101,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function cancel($orderId, array $options = array())
     {
-        $request = new PostJson('/admin/orders/' . $orderId . '/cancel.json', $options);
+        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/cancel.json', $options);
         $this->send($request);
     }
 }

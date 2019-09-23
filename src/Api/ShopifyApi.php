@@ -92,6 +92,11 @@ class ShopifyApi
     private $client;
 
     /**
+     * @var
+     */
+    private $version;
+
+    /**
      * @var string[]
      */
     private $endpointClasses = [
@@ -144,10 +149,12 @@ class ShopifyApi
 
     /**
      * @param ClientInterface $client
+     * @param string $version
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, string $version)
     {
         $this->client = $client;
+        $this->version = $version;
     }
 
     /**
@@ -166,7 +173,7 @@ class ShopifyApi
 
         $class = $this->endpointClasses[$endpoint];
 
-        return $this->endpoints[$endpoint] = new $class($this->client);
+        return $this->endpoints[$endpoint] = new $class($this->client, $this->version);
     }
 
     public function __get($name)

@@ -14,7 +14,7 @@ class RecurringApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $recurringApplicationCharge)
     {
-        $request = new PostJson('/admin/recurring_application_charges.json', array('recurring_application_charge' => $recurringApplicationCharge->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/recurring_application_charges.json', array('recurring_application_charge' => $recurringApplicationCharge->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('recurring_application_charge'));
     }
@@ -25,7 +25,7 @@ class RecurringApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function findOne($recurringApplicationChargeId)
     {
-        $request = new GetJson('/admin/recurring_application_charges/' . $recurringApplicationChargeId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/recurring_application_charges/' . $recurringApplicationChargeId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('recurring_application_charge'));
     }
@@ -36,7 +36,7 @@ class RecurringApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/recurring_application_charges.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/recurring_application_charges.json', $query);
         $response = $this->send($request);
         return $this->createCollection($response->get('recurring_application_charges'));
     }
@@ -47,7 +47,7 @@ class RecurringApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function activate($recurringApplicationChargeId)
     {
-        $request = new PostJson('/admin/recurring_application_charges/' . $recurringApplicationChargeId . '/activate.json');
+        $request = new PostJson('/admin/api/' . $this->version . '/recurring_application_charges/' . $recurringApplicationChargeId . '/activate.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('recurring_application_charge'));
     }
@@ -57,7 +57,7 @@ class RecurringApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function delete($recurringApplicationChargeId)
     {
-        $request = new DeleteParams('/admin/recurring_application_charges/' . $recurringApplicationChargeId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/recurring_application_charges/' . $recurringApplicationChargeId . '.json');
         $this->send($request);
     }
 }

@@ -11,12 +11,13 @@ class PriceRuleEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
-        $request = new GetJson('/admin/price_rules.json', $query);
-        $response = $this->sendPaged($request, 'price_rules');
+        $request = new GetJson('/admin/api/' . $this->version . '/price_rules.json', $query);
+        $response = $this->sendPaged($request, 'price_rules', $links);
         return $this->createCollection($response);
     }
 
@@ -26,7 +27,7 @@ class PriceRuleEndpoint extends AbstractEndpoint
      */
     public function findOne($priceRuleId)
     {
-        $request = new GetJson('/admin/price_rules/' . $priceRuleId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('price_rule'));
     }
@@ -36,7 +37,7 @@ class PriceRuleEndpoint extends AbstractEndpoint
      */
     public function countAll()
     {
-        $request = new GetJson('/admin/price_rules/count.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/price_rules/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -47,7 +48,7 @@ class PriceRuleEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $priceRule)
     {
-        $request = new PostJson('/admin/price_rules.json', array('price_rule' => $priceRule->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/price_rules.json', array('price_rule' => $priceRule->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('price_rule'));
     }
@@ -59,7 +60,7 @@ class PriceRuleEndpoint extends AbstractEndpoint
      */
     public function update($priceRuleId, GenericResource $priceRule)
     {
-        $request = new PutJson('/admin/price_rules/' . $priceRuleId . '.json', array('price_rule' => $priceRule->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '.json', array('price_rule' => $priceRule->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('price_rule'));
     }
@@ -69,7 +70,7 @@ class PriceRuleEndpoint extends AbstractEndpoint
      */
     public function delete($priceRuleId)
     {
-        $request = new DeleteParams('/admin/price_rules/' . $priceRuleId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/price_rules/' . $priceRuleId . '.json');
         $this->send($request);
     }
 }

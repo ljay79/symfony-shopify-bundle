@@ -13,7 +13,7 @@ class ApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetParams('/admin/application_charges.json', $query);
+        $request = new GetParams('/admin/api/' . $this->version . '/application_charges.json', $query);
         $response = $this->send($request);
         return $this->createCollection($response->get('application_charges'));
     }
@@ -24,7 +24,7 @@ class ApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function findOne($applicationChargeId)
     {
-        $request = new GetParams('/admin/application_charges/' . $applicationChargeId . '.json');
+        $request = new GetParams('/admin/api/' . $this->version . '/application_charges/' . $applicationChargeId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('application_charge'));
     }
@@ -35,7 +35,7 @@ class ApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $applicationCharge)
     {
-        $request = new PostJson('/admin/application_charges.json', array('application_charge' => $applicationCharge->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/application_charges.json', array('application_charge' => $applicationCharge->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('application_charge'));
     }
@@ -45,7 +45,7 @@ class ApplicationChargeEndpoint extends AbstractEndpoint
      */
     public function activate($applicationChargeId)
     {
-        $request = new PostJson('/admin/application_charges/' . $applicationChargeId . '/activate.json', null);
+        $request = new PostJson('/admin/api/' . $this->version . '/application_charges/' . $applicationChargeId . '/activate.json', null);
         $this->send($request);
     }
 }

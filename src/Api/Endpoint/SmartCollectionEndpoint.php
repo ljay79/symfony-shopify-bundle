@@ -11,12 +11,13 @@ class SmartCollectionEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
-        $request = new GetJson('/admin/smart_collections.json', $query);
-        $response = $this->sendPaged($request, 'smart_collections');
+        $request = new GetJson('/admin/api/' . $this->version . '/smart_collections.json', $query);
+        $response = $this->sendPaged($request, 'smart_collections', $links);
         return $this->createCollection($response);
     }
 
@@ -26,7 +27,7 @@ class SmartCollectionEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/smart_collections/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/smart_collections/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -39,7 +40,7 @@ class SmartCollectionEndpoint extends AbstractEndpoint
     public function findOne($smartCollectionId, array $fields = array())
     {
         $params = $fields ? array('params' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/smart_collections/' . $smartCollectionId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/smart_collections/' . $smartCollectionId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('smart_collection'));
     }
@@ -50,7 +51,7 @@ class SmartCollectionEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $smartCollection)
     {
-        $request = new PostJson('/admin/smart_collections.json', array('smart_collection' => $smartCollection->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/smart_collections.json', array('smart_collection' => $smartCollection->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('smart_collection'));
     }
@@ -62,7 +63,7 @@ class SmartCollectionEndpoint extends AbstractEndpoint
      */
     public function update($smartCollectionId, GenericResource $smartCollection)
     {
-        $request = new PutJson('/admin/smart_collections/' . $smartCollectionId . '.json', array('smart_collection' => $smartCollection->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/smart_collections/' . $smartCollectionId . '.json', array('smart_collection' => $smartCollection->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('smart_collection'));
     }
@@ -72,7 +73,7 @@ class SmartCollectionEndpoint extends AbstractEndpoint
      */
     public function delete($smartCollectionId)
     {
-        $request = new DeleteParams('/admin/smart_collections/' . $smartCollectionId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/smart_collections/' . $smartCollectionId . '.json');
         $this->send($request);
     }
 
@@ -93,7 +94,7 @@ class SmartCollectionEndpoint extends AbstractEndpoint
             $params[] = 'products[]=' . $productId;
         }
 
-        $url = '/admin/smart_collections/' . $smartCollectionId . '/order.json' . ($params ? '?' . implode('&', $params) : '');
+        $url = '/admin/api/' . $this->version . '/smart_collections/' . $smartCollectionId . '/order.json' . ($params ? '?' . implode('&', $params) : '');
 
         $request = new PutJson($url);
         $this->send($request);

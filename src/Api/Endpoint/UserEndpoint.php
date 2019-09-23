@@ -10,7 +10,7 @@ class UserEndpoint extends AbstractEndpoint
      */
     public function findAll()
     {
-        $request = new GetJson('/admin/users.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/users.json');
         $response = $this->send($request);
         return $this->createCollection($response->get('users'));
     }
@@ -21,7 +21,7 @@ class UserEndpoint extends AbstractEndpoint
      */
     public function findOne($userId)
     {
-        $request = new GetJson('/admin/users/' . $userId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/users/' . $userId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('user'));
     }

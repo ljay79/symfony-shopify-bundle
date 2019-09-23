@@ -3,6 +3,7 @@ namespace CodeCloud\Bundle\ShopifyBundle\Api\Endpoint;
 
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\Exception\FailedRequestException;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\Response\ResponseInterface;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use CodeCloud\Bundle\ShopifyBundle\Api\Response\ErrorResponse;
@@ -19,16 +20,22 @@ abstract class AbstractEndpoint
     private $client;
 
     /**
+     * @var string
+     */
+    protected $version;
+
+    /**
      * @param ClientInterface $client
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, string $version)
     {
         $this->client = $client;
+        $this->version = $version;
     }
 
     /**
      * @param RequestInterface $request
-     * @return \CodeCloud\Bundle\ShopifyBundle\Api\Response\ResponseInterface
+     * @return ResponseInterface
      * @throws FailedRequestException
      */
     protected function send(RequestInterface $request)
@@ -45,12 +52,13 @@ abstract class AbstractEndpoint
     /**
      * @param RequestInterface $request
      * @param string $rootElement
+     * @param array $links
      * @return array
      * @throws FailedRequestException
      */
-    protected function sendPaged(RequestInterface $request, $rootElement)
+    protected function sendPaged(RequestInterface $request, $rootElement, array &$links = array())
     {
-        return $this->processPaged($request, $rootElement);
+        return $this->processPaged($request, $rootElement, array(), $links);
     }
 
     /**
@@ -89,7 +97,7 @@ abstract class AbstractEndpoint
 
     /**
      * @param RequestInterface $request
-     * @return \CodeCloud\Bundle\ShopifyBundle\Api\Response\ResponseInterface
+     * @return ResponseInterface
      */
     protected function process(RequestInterface $request)
     {
@@ -115,9 +123,10 @@ abstract class AbstractEndpoint
      * @param RequestInterface $request
      * @param string $rootElement
      * @param array $params
+     * @param array $links
      * @return array
      */
-    protected function processPaged(RequestInterface $request, $rootElement, array $params = array())
+    protected function processPaged(RequestInterface $request, $rootElement, array $params = array(), array &$links = array())
     {
         $requestUrl = $request->getUri();
 
@@ -125,14 +134,11 @@ abstract class AbstractEndpoint
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
-            if (array_key_exists('limit', $query) || array_key_exists('page', $query)) {
+            if (array_key_exists('limit', $query)) {
                 $response = $this->process($request->withUri(new Uri($requestUrl)));
+                $links = $this->parseLinks($response);
                 return $response->get($rootElement);
             }
-        }
-
-        if (empty($params['page'])) {
-            $params['page'] = 1;
         }
 
         if (empty($params['limit'])) {
@@ -141,22 +147,47 @@ abstract class AbstractEndpoint
 
         $allResults = array();
 
+        $requestUrl = $request->getUri();
+        $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
+        $nextLink = $request->withUri(new Uri($requestUrl . $paramDelim . http_build_query($params)));
+
         do {
-            $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
-
-            $pagedRequest = $request->withUri(new Uri($requestUrl . $paramDelim . http_build_query($params)));
-
-            $response = $this->process($pagedRequest);
+            $response = $this->process($nextLink);
 
             $root = $response->get($rootElement);
+
+            $link = $response->getHttpResponse()->getHeaderLine('Link');
+            if (preg_match('/<(.*)>; rel="next"/', $link, $matchedLink)) {
+                $nextLink = $request->withUri(new Uri($matchedLink[1]));
+            } else {
+                $nextLink = null;
+            }
 
             if ($pageResults = empty($root) ? false : $root) {
                 $allResults = array_merge($allResults, $pageResults);
             }
 
-            $params['page']++;
-        } while ($pageResults);
+        } while ($nextLink);
 
         return $allResults;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return array
+     */
+    protected function parseLinks(ResponseInterface $response)
+    {
+        $header = $response->getHttpResponse()->getHeaderLine('Link');
+        $headerParts = explode(',', $header);
+
+        $links = [];
+        foreach ( $headerParts as $part) {
+            if (preg_match('/<(.*)>; rel="(.*)"/', $part, $parsedHeader)) {
+                $links[$parsedHeader[2]] = $parsedHeader[1];
+            }
+        }
+
+        return $links;
     }
 }
