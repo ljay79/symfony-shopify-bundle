@@ -22,6 +22,20 @@ class OrderEndpoint extends AbstractEndpoint
     }
 
     /**
+     * @param callable $callback
+     * @param array $query
+     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     */
+    public function chunk(callable $callback, array $query = array())
+    {
+        $request = new GetJson('/admin/api/' . $this->version . '/orders.json', $query);
+        $wrapCollection = function ($chunk) use ($callback) {
+            $callback($this->createCollection($chunk));
+        };
+        $this->processChunk($request, 'orders', $wrapCollection, []);
+    }
+
+    /**
      * @param int $orderId
      * @param array $fields
      * @return \CodeCloud\Bundle\ShopifyBundle\Api\GenericResource

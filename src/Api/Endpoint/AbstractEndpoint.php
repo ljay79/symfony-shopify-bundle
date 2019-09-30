@@ -141,35 +141,60 @@ abstract class AbstractEndpoint
             }
         }
 
+        $allResults = array();
+
+        $callback = function($root) use (&$allResults){
+            if ($pageResults = empty($root) ? false : $root) {
+                $allResults = array_merge($allResults, $pageResults);
+            }
+        };
+
+        $this->processChunk($request, $rootElement, $callback, $params);
+
+        return $allResults;
+    }
+
+
+    /**
+     * Loop through a set of API results that are available in pages, passing chunks to callback
+     * @param RequestInterface $request
+     * @param string $rootElement
+     * @param callable $callback
+     * @param array $params
+     */
+    protected function processChunk(RequestInterface $request, $rootElement, callable $callback, array $params = [])
+    {
         if (empty($params['limit'])) {
             $params['limit'] = 250;
         }
 
-        $allResults = array();
-
         $requestUrl = $request->getUri();
         $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
-        $nextLink = $request->withUri(new Uri($requestUrl . $paramDelim . http_build_query($params)));
+        $nextLink = $request->withUri(new Uri($requestUrl.$paramDelim.http_build_query($params)));
 
         do {
             $response = $this->process($nextLink);
 
             $root = $response->get($rootElement);
 
-            $link = $response->getHttpResponse()->getHeaderLine('Link');
-            if (preg_match('/<(.*)>; rel="next"/', $link, $matchedLink)) {
-                $nextLink = $request->withUri(new Uri($matchedLink[1]));
+            $links = $this->parseLinks($response);
+            if (isset($links['next'])) {
+                $nextLink = $request->withUri(new Uri($links['next']));
             } else {
                 $nextLink = null;
             }
 
-            if ($pageResults = empty($root) ? false : $root) {
-                $allResults = array_merge($allResults, $pageResults);
+            if ( ! empty($root)) {
+                /**
+                 * On each chunk result set, we will pass them to the callback and then let the
+                 * developer take care of everything within the callback, which allows us to
+                 * keep the memory low for spinning through large result sets for working.
+                 */
+                $callback($root);
             }
 
         } while ($nextLink);
 
-        return $allResults;
     }
 
     /**
