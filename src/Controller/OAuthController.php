@@ -102,7 +102,7 @@ class OAuthController
             throw new BadRequestHttpException('Request is missing required parameter "shop".');
         }
 
-        if ($response = $this->dispatcher->dispatch(PreAuthEvent::NAME, new PreAuthEvent($storeName))->getResponse()) {
+        if ($response = $this->dispatcher->dispatch(new PreAuthEvent($storeName), PreAuthEvent::NAME)->getResponse()) {
             return $response;
         }
 
@@ -185,7 +185,7 @@ class OAuthController
         $accessToken = $responseJson['access_token'];
         $this->stores->authenticateStore($storeName, $accessToken, $nonce);
 
-        $this->dispatcher->dispatch(PostAuthEvent::NAME, new PostAuthEvent($storeName, $accessToken));
+        $this->dispatcher->dispatch(new PostAuthEvent($storeName, $accessToken), PostAuthEvent::NAME);
 
         // check if this is first installation then redirect to apps section
         if (0 == mb_strlen($existingAccessToken)) {

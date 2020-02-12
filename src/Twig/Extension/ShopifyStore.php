@@ -2,8 +2,10 @@
 namespace CodeCloud\Bundle\ShopifyBundle\Twig\Extension;
 
 use CodeCloud\Bundle\ShopifyBundle\Security\HmacSignature;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class ShopifyStore extends \Twig_Extension
+class ShopifyStore extends AbstractExtension
 {
     /**
      * @var HmacSignature
@@ -24,7 +26,7 @@ class ShopifyStore extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('embedded_link', [$this, 'embeddedLink']),
+            new TwigFunction('embedded_link', [$this, 'embeddedLink']),
         ];
     }
 

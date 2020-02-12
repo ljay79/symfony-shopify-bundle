@@ -57,11 +57,11 @@ class WebhookController
 
         $payload = $request->getContent();
 
-        $this->eventDispatcher->dispatch(WebhookEvent::NAME, new WebhookEvent(
+        $this->eventDispatcher->dispatch(new WebhookEvent(
             $topic,
             $storeName,
             $payload
-        ));
+        ), WebhookEvent::NAME);
 
         return new Response('Shopify Webhook Received');
     }
