@@ -37,7 +37,7 @@ class BlogEndpoint extends AbstractEndpoint
     public function findOne($blogId, array $fields = array())
     {
         $params = $fields ? array('fields' => $fields) : array();
-        $request = new GetJson('/admin/blogs/' . $blogId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('blog'));
     }
@@ -48,7 +48,7 @@ class BlogEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $blog)
     {
-        $request = new PostJson('/admin/blogs.json', array('blog' => $blog->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/blogs.json', array('blog' => $blog->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('blog'));
     }
@@ -60,7 +60,7 @@ class BlogEndpoint extends AbstractEndpoint
      */
     public function update($blogId, GenericResource $blog)
     {
-        $request = new PostJson('/admin/blogs/' . $blogId . '.json', array('blog' => $blog->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/blogs/' . $blogId . '.json', array('blog' => $blog->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('blog'));
     }
@@ -70,7 +70,7 @@ class BlogEndpoint extends AbstractEndpoint
      */
     public function delete($blogId)
     {
-        $request = new DeleteParams('/admin/blogs/' . $blogId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/blogs/' . $blogId . '.json');
         $this->send($request);
     }
 }

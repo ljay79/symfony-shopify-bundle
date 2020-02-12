@@ -15,6 +15,8 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomCollectionEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomerAddressEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomerEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomerSavedSearchEndpoint;
+use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\DiscountCodeEndpoint;
+use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\DraftOrderEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\EventEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\FulFillmentEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\FulfillmentServiceEndpoint;
@@ -24,6 +26,7 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\OrderEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\OrderRisksEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\PageEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\PolicyEndpoint;
+use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\PriceRuleEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\ProductImageEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\ProductEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\ProductVariantEndpoint;
@@ -56,6 +59,8 @@ use GuzzleHttp\ClientInterface;
  * @property CustomerAddressEndpoint CustomerAddress
  * @property CustomerEndpoint Customer
  * @property CustomerSavedSearchEndpoint SavedSearch
+ * @property DiscountCodeEndpoint DiscountCode
+ * @property DraftOrderEndpoint DraftOrder
  * @property EventEndpoint Event
  * @property FulFillmentEndpoint Fulfillment
  * @property FulfillmentServiceEndpoint FulfillmentService
@@ -65,6 +70,7 @@ use GuzzleHttp\ClientInterface;
  * @property OrderRisksEndpoint OrderRisks
  * @property PageEndpoint Page
  * @property PolicyEndpoint Policy
+ * @property PriceRuleEndpoint PriceRule
  * @property ProductImageEndpoint ProductImage
  * @property ProductEndpoint Product
  * @property ProductVariantEndpoint ProductVariant
@@ -88,6 +94,11 @@ class ShopifyApi
     private $client;
 
     /**
+     * @var
+     */
+    private $version;
+
+    /**
      * @var string[]
      */
     private $endpointClasses = [
@@ -104,6 +115,8 @@ class ShopifyApi
         'CustomerAddress' => CustomerAddressEndpoint::class,
         'Customer' => CustomerEndpoint::class,
         'SavedSearch' => CustomerSavedSearchEndpoint::class,
+        'DiscountCode' => DiscountCodeEndpoint::class,
+        'DraftOrder' => DraftOrderEndpoint::class,
         'Event' => EventEndpoint::class,
         'Fulfillment' => FulFillmentEndpoint::class,
         'FulfillmentService' => FulfillmentServiceEndpoint::class,
@@ -113,6 +126,7 @@ class ShopifyApi
         'OrderRisks' => OrderRisksEndpoint::class,
         'Page' => PageEndpoint::class,
         'Policy' => PolicyEndpoint::class,
+        'PriceRule' => PriceRuleEndpoint::class,
         'ProductImage' => ProductImageEndpoint::class,
         'Product' => ProductEndpoint::class,
         'ProductVariant' => ProductVariantEndpoint::class,
@@ -138,10 +152,12 @@ class ShopifyApi
 
     /**
      * @param ClientInterface $client
+     * @param string $version
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, string $version)
     {
         $this->client = $client;
+        $this->version = $version;
     }
 
     /**
@@ -160,7 +176,7 @@ class ShopifyApi
 
         $class = $this->endpointClasses[$endpoint];
 
-        return $this->endpoints[$endpoint] = new $class($this->client);
+        return $this->endpoints[$endpoint] = new $class($this->client, $this->version);
     }
 
     public function __get($name)

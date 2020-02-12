@@ -15,7 +15,7 @@ class AssetEndpoint extends AbstractEndpoint
             $params['fields'] = implode(',', $fields);
         }
 
-        $request = new GetJson('/admin/themes/' . $themeId . '/assets.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/themes/' . $themeId . '/assets.json', $params);
         $response = $this->send($request);
         return $response->get('assets');
     }
@@ -32,7 +32,7 @@ class AssetEndpoint extends AbstractEndpoint
             'theme_id'   => $themeId
         );
 
-        $request = new GetJson('/admin/themes/' . $themeId . '/assets.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/themes/' . $themeId . '/assets.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('asset'));
     }
@@ -52,7 +52,7 @@ class AssetEndpoint extends AbstractEndpoint
             )
         );
 
-        $request = new PutJson('/admin/themes/' . $themeId . '/assets.json', $params);
+        $request = new PutJson('/admin/api/' . $this->version . '/themes/' . $themeId . '/assets.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('asset'));
     }
@@ -72,7 +72,7 @@ class AssetEndpoint extends AbstractEndpoint
             )
         );
 
-        $request = new PutJson('/admin/themes/' . $themeId . '/assets.json', $params);
+        $request = new PutJson('/admin/api/' . $this->version . '/themes/' . $themeId . '/assets.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('asset'));
     }
@@ -92,7 +92,7 @@ class AssetEndpoint extends AbstractEndpoint
             )
         );
 
-        $request = new PutJson('/admin/themes/' . $themeId . '/assets.json', $params);
+        $request = new PutJson('/admin/api/' . $this->version . '/themes/' . $themeId . '/assets.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('asset'));
     }
@@ -112,7 +112,7 @@ class AssetEndpoint extends AbstractEndpoint
             )
         );
 
-        $request = new PutJson('/admin/themes/' . $themeId . '/assets.json', $params);
+        $request = new PutJson('/admin/api/' . $this->version . '/themes/' . $themeId . '/assets.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('asset'));
     }
@@ -128,7 +128,7 @@ class AssetEndpoint extends AbstractEndpoint
             'theme_id'   => $themeId
         );
 
-        $request = new DeleteParams('/admin/themes/' . $themeId . '/assets.json', $params);
+        $request = new DeleteParams('/admin/api/' . $this->version . '/themes/' . $themeId . '/assets.json', $params);
         $this->send($request);
     }
 }

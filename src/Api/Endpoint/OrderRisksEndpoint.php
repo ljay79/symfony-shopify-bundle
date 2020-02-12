@@ -15,7 +15,7 @@ class OrderRisksEndpoint extends AbstractEndpoint
      */
     public function findByOrder($orderId)
     {
-        $request = new GetJson('/admin/orders/' . $orderId . '/risks.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/risks.json');
         $response = $this->send($request);
         return $this->createCollection($response->get('risks'));
     }
@@ -27,7 +27,7 @@ class OrderRisksEndpoint extends AbstractEndpoint
      */
     public function findOne($orderId, $orderRisksId)
     {
-        $request = new GetJson('/admin/orders/' . $orderId . '/risks/' . $orderRisksId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/risks/' . $orderRisksId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('risk'));
     }
@@ -39,7 +39,7 @@ class OrderRisksEndpoint extends AbstractEndpoint
      */
     public function create($orderId, GenericResource $orderRisks)
     {
-        $request = new PostJson('/admin/orders/' . $orderId . '/risks.json', $orderRisks);
+        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/risks.json', $orderRisks);
         $response = $this->send($request);
         return $this->createEntity($response->get('risk'));
     }
@@ -52,7 +52,7 @@ class OrderRisksEndpoint extends AbstractEndpoint
      */
     public function update($orderId, $orderRisksId, GenericResource $orderRisks)
     {
-        $request = new PutJson('/admin/orders/' . $orderId . '/risks/' . $orderRisksId . '.json', array('risk' => $orderRisks->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/risks/' . $orderRisksId . '.json', array('risk' => $orderRisks->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('risk'));
     }
@@ -63,7 +63,7 @@ class OrderRisksEndpoint extends AbstractEndpoint
      */
     public function delete($orderId, $orderRisksId)
     {
-        $request = new DeleteParams('/admin/orders/' . $orderId . '/risks/' . $orderRisksId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/orders/' . $orderId . '/risks/' . $orderRisksId . '.json');
         $this->send($request);
     }
 }

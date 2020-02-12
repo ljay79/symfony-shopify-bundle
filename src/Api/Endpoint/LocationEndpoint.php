@@ -10,7 +10,7 @@ class LocationEndpoint extends AbstractEndpoint
      */
     public function findAll()
     {
-        $request = new GetJson('/admin/locations.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/locations.json');
         $response = $this->send($request);
         return $this->createCollection($response->get('locations'));
     }
@@ -21,7 +21,7 @@ class LocationEndpoint extends AbstractEndpoint
      */
     public function findOne($locationId)
     {
-        $request = new GetJson('/admin/locations/' . $locationId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/locations/' . $locationId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('location'));
     }

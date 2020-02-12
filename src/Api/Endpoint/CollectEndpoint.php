@@ -10,12 +10,13 @@ class CollectEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
+     * @param array $links
      * @return array|GenericResource[]
      */
-    public function findAll(array $query = array())
+    public function findAll(array $query = array(), array &$links = array())
     {
-        $request = new GetJson('/admin/collects.json', $query);
-        $response = $this->sendPaged($request, 'collects');
+        $request = new GetJson('/admin/api/' . $this->version . '/collects.json', $query);
+        $response = $this->sendPaged($request, 'collects', $links);
         return $this->createCollection($response);
     }
 
@@ -25,7 +26,7 @@ class CollectEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/collects/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/collects/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -36,7 +37,7 @@ class CollectEndpoint extends AbstractEndpoint
      */
     public function findOne($collectId)
     {
-        $request = new GetJson('/admin/collects/' . $collectId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/collects/' . $collectId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('collect'));
     }
@@ -47,7 +48,7 @@ class CollectEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $collect)
     {
-        $request = new PostJson('/admin/collects.json', array('collect' => $collect->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/collects.json', array('collect' => $collect->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('collect'));
     }
@@ -57,7 +58,7 @@ class CollectEndpoint extends AbstractEndpoint
      */
     public function delete($collectId)
     {
-        $request = new DeleteParams('/admin/collects/' . $collectId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/collects/' . $collectId . '.json');
         $this->send($request);
     }
 }

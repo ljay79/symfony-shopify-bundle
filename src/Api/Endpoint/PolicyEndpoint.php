@@ -11,7 +11,7 @@ class PolicyEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/policies.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/policies.json', $query);
         $response = $this->send($request);
         return $this->createCollection($response->get('policies'));
     }

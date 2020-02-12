@@ -16,7 +16,7 @@ class ScriptTagEndpoint extends AbstractEndpoint
     public function findAll(array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/script_tags.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/script_tags.json', $params);
         $response = $this->send($request);
 
         return $this->createCollection($response->get('script_tags'));
@@ -28,7 +28,7 @@ class ScriptTagEndpoint extends AbstractEndpoint
      */
     public function findOne($id)
     {
-        $request = new GetJson('/admin/script_tags/' . $id . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/script_tags/' . $id . '.json');
         $response = $this->send($request);
 
         return $this->createEntity($response->get('script_tag'));
@@ -40,7 +40,7 @@ class ScriptTagEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $resource)
     {
-        $request = new PostJson('/admin/script_tags.json', array('script_tag' => $resource->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/script_tags.json', array('script_tag' => $resource->toArray()));
         $response = $this->send($request);
 
         return $this->createEntity($response->get('script_tag'));
@@ -53,7 +53,7 @@ class ScriptTagEndpoint extends AbstractEndpoint
      */
     public function update($id, $resource)
     {
-        $request = new PutJson('/admin/script_tags/' . $id . '.json', array('script_tag' => $resource->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/script_tags/' . $id . '.json', array('script_tag' => $resource->toArray()));
         $response = $this->send($request);
 
         return $this->createEntity($response->get('script_tag'));
@@ -64,7 +64,7 @@ class ScriptTagEndpoint extends AbstractEndpoint
      */
     public function delete($id)
     {
-        $request = new DeleteParams('/admin/script_tags/' . $id . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/script_tags/' . $id . '.json');
         $this->send($request);
     }
 }
