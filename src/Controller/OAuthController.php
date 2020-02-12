@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use GuzzleHttp\Exception\ClientException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Handles the OAuth handshake with Shopify.
@@ -53,6 +55,12 @@ class OAuthController
     private $hmacSignature;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+
+    /**
      * @param UrlGeneratorInterface        $router
      * @param array                        $config
      * @param ClientInterface              $client
@@ -66,7 +74,8 @@ class OAuthController
         ClientInterface $client,
         ShopifyStoreManagerInterface $stores,
         EventDispatcherInterface $dispatcher,
-        HmacSignature $hmacSignature
+        HmacSignature $hmacSignature,
+        LoggerInterface $logger
     ) {
         $this->router = $router;
         $this->client = $client;
@@ -77,6 +86,7 @@ class OAuthController
         ;
         $this->dispatcher = $dispatcher;
         $this->hmacSignature = $hmacSignature;
+        $this->logger = $logger;
     }
 
     /**
@@ -152,8 +162,18 @@ class OAuthController
         ];
 
         // todo this can fail - 400
-        $response = $this->client->request('POST', 'https://' . $storeName . '/admin/oauth/access_token', $params);
-        $responseJson = \GuzzleHttp\json_decode($response->getBody(), true);
+        try {
+            $response = $this->client->request('POST', 'https://' . $storeName . '/admin/oauth/access_token', $params);
+            $responseJson = \GuzzleHttp\json_decode($response->getBody(), true);
+        } catch (ClientException $e) {
+            $this->logger->error('Verification of oauth access_token failed!', [
+                'params' => $params,
+                'error_code' => $e->getCode(),
+                'error' => $e->getMessage(),
+                'body' => $e->getResponse()->getBody(),
+            ]);
+            throw new BadRequestHttpException($e->getMessage());
+        }
 
         if ($responseJson['scope'] != $this->config['scope']) {
             throw new InsufficientScopeException($this->config['scope'], $responseJson['scope']);

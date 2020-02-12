@@ -15,6 +15,7 @@ services:
           - "@codecloud_shopify.store_manager"
           - "@event_dispatcher"
           - "@codecloud_shopify.signer"
+          - "@logger"
       public: true
 
   codecloud_shopify.controller.webhooks:
