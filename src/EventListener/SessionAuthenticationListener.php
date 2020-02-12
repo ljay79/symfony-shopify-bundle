@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class SessionAuthenticationListener implements EventSubscriberInterface
 {
-    CONST SESSION_PARAMETER = 'codecloud_shopify.authorized_store';
+    const SESSION_PARAMETER = 'codecloud_shopify.authorized_store';
 
     /**
      * @var RequestStack

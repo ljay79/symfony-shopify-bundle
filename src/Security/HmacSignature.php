@@ -78,4 +78,20 @@ class HmacSignature
             $rawOutput
         );
     }
+
+    /**
+     * @param string $data
+     * @param bool   $rawOutput
+     *
+     * @return string
+     */
+    public function generateHmacRaw(string $data, bool $rawOutput = false): string
+    {
+        return hash_hmac(
+            'sha256',
+            $data,
+            $this->sharedSecret,
+            $rawOutput
+            );
+    }
 }

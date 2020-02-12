@@ -32,15 +32,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * @see https://symfony.com/blog/new-in-symfony-3-4-guard-authentication-improvements
-     */
     public function supports(Request $request)
-    {
-        return true;
-    }
-
-    public function getCredentials(Request $request)
     {
         if (!$session = $request->getSession()) {
             return false;
@@ -50,8 +42,13 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
             return false;
         }
 
+        return true;
+    }
+
+    public function getCredentials(Request $request)
+    {
         return [
-            'shop' => $session->get(SessionAuthenticationListener::SESSION_PARAMETER),
+            'shop' => $request->getSession()->get(SessionAuthenticationListener::SESSION_PARAMETER),
         ];
     }
 
