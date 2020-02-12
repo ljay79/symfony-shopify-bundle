@@ -53,12 +53,12 @@ class OAuthController
     private $hmacSignature;
 
     /**
-     * @param UrlGeneratorInterface $router
-     * @param array $config
-     * @param ClientInterface $client
+     * @param UrlGeneratorInterface        $router
+     * @param array                        $config
+     * @param ClientInterface              $client
      * @param ShopifyStoreManagerInterface $stores
-     * @param EventDispatcherInterface $dispatcher
-     * @param HmacSignature $hmacSignature
+     * @param EventDispatcherInterface     $dispatcher
+     * @param HmacSignature                $hmacSignature
      */
     public function __construct(
         UrlGeneratorInterface $router,
@@ -83,6 +83,7 @@ class OAuthController
      * Handles initial auth request from Shopify.
      *
      * @param Request $request
+     *
      * @return RedirectResponse
      */
     public function auth(Request $request)
@@ -91,24 +92,21 @@ class OAuthController
             throw new BadRequestHttpException('Request is missing required parameter "shop".');
         }
 
-        if ($response = $this->dispatcher->dispatch(
-            PreAuthEvent::NAME,
-            new PreAuthEvent($storeName))->getResponse()
-        ) {
+        if ($response = $this->dispatcher->dispatch(PreAuthEvent::NAME, new PreAuthEvent($storeName))->getResponse()) {
             return $response;
         }
 
         $verifyUrl = $this->router->generate('codecloud_shopify_verify', [], UrlGeneratorInterface::ABSOLUTE_URL);
-        $verifyUrl = str_replace("http://", "https://", $verifyUrl);
+        $verifyUrl = str_replace('http://', 'https://', $verifyUrl);
         $nonce = uniqid();
 
         $this->stores->preAuthenticateStore($storeName, $nonce);
 
         $params = [
-            'client_id'    => $this->config['api_key'],
-            'scope'        => $this->config['scope'],
+            'client_id' => $this->config['api_key'],
+            'scope' => $this->config['scope'],
             'redirect_uri' => $verifyUrl,
-            'state'        => $nonce,
+            'state' => $nonce,
         ];
 
         $shopifyEndpoint = 'https://%s/admin/oauth/authorize?%s';
@@ -121,14 +119,15 @@ class OAuthController
      * Handles auth verification callback from Shopify.
      *
      * @param Request $request
+     *
      * @return string
      */
     public function verify(Request $request)
     {
-        $authCode  = $request->get('code');
+        $authCode = $request->get('code');
         $storeName = $request->get('shop');
-        $nonce     = $request->get('state');
-        $hmac      = $request->get('hmac');
+        $nonce = $request->get('state');
+        $hmac = $request->get('hmac');
 
         // todo validate store name
         // todo leverage options resolver?
@@ -143,9 +142,9 @@ class OAuthController
 
         $params = [
             'body' => \GuzzleHttp\json_encode([
-                'client_id'     => $this->config['api_key'],
+                'client_id' => $this->config['api_key'],
                 'client_secret' => $this->config['shared_secret'],
-                'code'          => $authCode
+                'code' => $authCode,
             ]),
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -160,14 +159,27 @@ class OAuthController
             throw new InsufficientScopeException($this->config['scope'], $responseJson['scope']);
         }
 
+        // check if there is existing store token for redirecting purposes
+        $existingAccessToken = $this->stores->getAccessToken($storeName);
+
         $accessToken = $responseJson['access_token'];
         $this->stores->authenticateStore($storeName, $accessToken, $nonce);
 
-        if ($response = $this->dispatcher->dispatch(
-            PostAuthEvent::NAME,
-            new PostAuthEvent($storeName, $accessToken))->getResponse()
-        ) {
-            return $response;
+        $this->dispatcher->dispatch(PostAuthEvent::NAME, new PostAuthEvent($storeName, $accessToken));
+
+        // check if this is first installation then redirect to apps section
+        if (0 == mb_strlen($existingAccessToken)) {
+            $redirectUrl = sprintf('https://%s/admin/apps', $storeName);
+
+            return new RedirectResponse($redirectUrl);
+        }
+
+        // check for session redirect target
+        $session = $request->getSession();
+        if ($session) {
+            $targetPath = $session->get('_security.shopify_admin.target_path');
+
+            return new RedirectResponse($targetPath);
         }
 
         return new RedirectResponse(
