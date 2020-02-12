@@ -196,9 +196,7 @@ class OAuthController
 
         // check for session redirect target
         $session = $request->getSession();
-        if ($session) {
-            $targetPath = $session->get('_security.shopify_admin.target_path');
-
+        if ($session && '' !== $targetPath = $session->get('_security.shopify_admin.target_path', '')) {
             return new RedirectResponse($targetPath);
         }
 

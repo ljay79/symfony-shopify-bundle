@@ -91,7 +91,7 @@ security:
             id: codecloud_shopify.security.admin_user_provider
 
     firewalls:
-        admin:
+        shopify_admin:
             pattern: ^/admin
             provider: codecloud_shopify
             guard:
