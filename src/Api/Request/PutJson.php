@@ -8,9 +8,10 @@ class PutJson extends Request
     /**
      * @param string $url
      * @param array|string $postData
+     * @param array $params
      * @param array $headers
      */
-    public function __construct($url, $postData = null, array $headers = array())
+    public function __construct($url, $postData = null, array $params = array(), $headers = array())
     {
         if ($postData !== null) {
             $postData = json_encode($postData, JSON_PRETTY_PRINT);

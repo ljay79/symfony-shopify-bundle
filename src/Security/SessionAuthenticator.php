@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+
 /**
  * Authenticates users via session parameter.
  */
@@ -29,6 +30,14 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
     public function __construct(UrlGeneratorInterface $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
+     * @see https://symfony.com/blog/new-in-symfony-3-4-guard-authentication-improvements
+     */
+    public function supports(Request $request)
+    {
+        return true;
     }
 
     public function getCredentials(Request $request)

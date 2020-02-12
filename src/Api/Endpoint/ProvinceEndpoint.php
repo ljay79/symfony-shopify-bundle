@@ -14,7 +14,7 @@ class ProvinceEndpoint extends AbstractEndpoint
      */
     public function findByCountry($countryId, array $query = array())
     {
-        $request = new GetJson('/admin/countries/' . $countryId . '/provinces.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/countries/' . $countryId . '/provinces.json', $query);
         $response = $this->send($request);
         return $this->createCollection($response->get('provinces'));
     }
@@ -26,7 +26,7 @@ class ProvinceEndpoint extends AbstractEndpoint
      */
     public function countByCountry($countryId, array $query = array())
     {
-        $request = new GetJson('/admin/countries/' . $countryId . '/provinces.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/countries/' . $countryId . '/provinces.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -38,7 +38,7 @@ class ProvinceEndpoint extends AbstractEndpoint
      */
     public function findOne($countryId, $provinceId)
     {
-        $request = new GetJson('/admin/countries/' . $countryId . '/provinces/' . $provinceId . '.json');
+        $request = new GetJson('/admin/api/' . $this->version . '/countries/' . $countryId . '/provinces/' . $provinceId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('province'));
     }
@@ -51,7 +51,7 @@ class ProvinceEndpoint extends AbstractEndpoint
      */
     public function update($countryId, $provinceId, GenericResource $province)
     {
-        $request = new PutJson('/admin/countries/' . $countryId . '/provinces/' . $provinceId . '.json', array('province' => $province->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/countries/' . $countryId . '/provinces/' . $provinceId . '.json', array('province' => $province->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('province'));
     }

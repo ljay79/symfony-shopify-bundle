@@ -16,7 +16,7 @@ class ThemeEndpoint extends AbstractEndpoint
     public function findAll(array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/themes.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/themes.json', $params);
         $response = $this->send($request);
         return $this->createCollection($response->get('themes'));
     }
@@ -29,7 +29,7 @@ class ThemeEndpoint extends AbstractEndpoint
     public function findOne($themeId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/themes/' . $themeId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/themes/' . $themeId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('theme'));
     }
@@ -40,7 +40,7 @@ class ThemeEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $theme)
     {
-        $request = new PostJson('/admin/themes.json', array('theme' => $theme->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/themes.json', array('theme' => $theme->toArray()));
         $response = $this->send($request);
         return $this->create($response->get('theme'));
     }
@@ -52,7 +52,7 @@ class ThemeEndpoint extends AbstractEndpoint
      */
     public function update($themeId, $theme)
     {
-        $request = new PutJson('/admin/themes/' . $themeId . '.json', array('theme' => $theme->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/themes/' . $themeId . '.json', array('theme' => $theme->toArray()));
         $response = $this->send($request);
         return $this->create($response->get('theme'));
     }
@@ -62,7 +62,7 @@ class ThemeEndpoint extends AbstractEndpoint
      */
     public function delete($themeId)
     {
-        $request = new DeleteParams('/admin/themes/' . $themeId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/themes/' . $themeId . '.json');
         $this->send($request);
     }
 }

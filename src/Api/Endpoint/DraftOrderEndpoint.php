@@ -7,7 +7,7 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
 
-class OrderEndpoint extends AbstractEndpoint
+class DraftOrderEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
@@ -16,23 +16,9 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query = array(), array &$links = array())
     {
-        $request = new GetJson('/admin/api/' . $this->version . '/orders.json', $query);
-        $response = $this->sendPaged($request, 'orders', $links);
+        $request = new GetJson('/admin/api/' . $this->version . '/draft_orders.json', $query);
+        $response = $this->sendPaged($request, 'draft_orders', $links);
         return $this->createCollection($response);
-    }
-
-    /**
-     * @param callable $callback
-     * @param array $query
-     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
-     */
-    public function chunk(callable $callback, array $query = array())
-    {
-        $request = new GetJson('/admin/api/' . $this->version . '/orders.json', $query);
-        $wrapCollection = function ($chunk) use ($callback) {
-            $callback($this->createCollection($chunk));
-        };
-        $this->processChunk($request, 'orders', $wrapCollection, []);
     }
 
     /**
@@ -43,9 +29,9 @@ class OrderEndpoint extends AbstractEndpoint
     public function findOne($orderId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/api/' . $this->version . '/orders/' . $orderId . '.json', $params);
+        $request = new GetJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '.json', $params);
         $response = $this->send($request);
-        return $this->createEntity($response->get('order'));
+        return $this->createEntity($response->get('draft_order'));
     }
 
     /**
@@ -54,7 +40,7 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/api/' . $this->version . '/orders/count.json', $query);
+        $request = new GetJson('/admin/api/' . $this->version . '/draft_orders/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -65,9 +51,9 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $order)
     {
-        $request = new PostJson('/admin/api/' . $this->version . '/orders.json', array('order' => $order->toArray()));
+        $request = new PostJson('/admin/api/' . $this->version . '/draft_orders.json', array('draft_order' => $order->toArray()));
         $response = $this->send($request);
-        return $this->createEntity($response->get('order'));
+        return $this->createEntity($response->get('draft_order'));
     }
 
     /**
@@ -77,9 +63,9 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function update($orderId, GenericResource $order)
     {
-        $request = new PutJson('/admin/api/' . $this->version . '/orders/' . $orderId . '.json', array('order' => $order->toArray()));
+        $request = new PutJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '.json', array('draft_order' => $order->toArray()));
         $response = $this->send($request);
-        return $this->createEntity($response->get('order'));
+        return $this->createEntity($response->get('draft_order'));
     }
 
     /**
@@ -87,35 +73,26 @@ class OrderEndpoint extends AbstractEndpoint
      */
     public function delete($orderId)
     {
-        $request = new DeleteParams('/admin/api/' . $this->version . '/orders/' . $orderId . '.json');
+        $request = new DeleteParams('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '.json');
         $this->send($request);
     }
 
     /**
      * @param int $orderId
      */
-    public function close($orderId)
+    public function sendInvoice($orderId)
     {
-        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/close.json');
+        $request = new PostJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '/send_invoice.json');
         $this->send($request);
     }
 
     /**
      * @param int $orderId
+     * @param bool $paymentPending
      */
-    public function open($orderId)
+    public function complete($orderId, bool $paymentPending = false)
     {
-        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/open.json');
-        $this->send($request);
-    }
-
-    /**
-     * @param int $orderId
-     * @param array $options
-     */
-    public function cancel($orderId, array $options = array())
-    {
-        $request = new PostJson('/admin/api/' . $this->version . '/orders/' . $orderId . '/cancel.json', $options);
+        $request = new PutJson('/admin/api/' . $this->version . '/draft_orders/' . $orderId . '/complete.json', array('payment_pending' => $paymentPending ? 'true' : 'false'));
         $this->send($request);
     }
 }

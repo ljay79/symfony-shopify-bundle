@@ -20,15 +20,23 @@ class ShopifyApiFactory
     private $httpClientFactory;
 
     /**
+     * @var string
+     */
+    private $version;
+
+    /**
      * @param ShopifyStoreManagerInterface $storeManager
      * @param HttpClientFactoryInterface $httpClientFactory
+     * @param string $version
      */
     public function __construct(
         ShopifyStoreManagerInterface $storeManager,
-        HttpClientFactoryInterface $httpClientFactory
+        HttpClientFactoryInterface $httpClientFactory,
+        string $version
     ) {
         $this->storeManager = $storeManager;
         $this->httpClientFactory = $httpClientFactory;
+        $this->version = $version;
     }
 
     /**
@@ -40,6 +48,6 @@ class ShopifyApiFactory
         $accessToken = $this->storeManager->getAccessToken($storeName);
         $client = $this->httpClientFactory->createHttpClient($storeName, new PublicAppCredentials($accessToken));
 
-        return new ShopifyApi($client);
+        return new ShopifyApi($client, $this->version);
     }
 }
