@@ -19,16 +19,16 @@ class WebhookEvent extends Event
     private $store;
 
     /**
-     * @var array
+     * @var string
      */
     private $resource;
 
     /**
      * @param string $topic
      * @param string $store
-     * @param array $resource
+     * @param string $resource
      */
-    public function __construct(string $topic, string $store, array $resource)
+    public function __construct(string $topic, string $store, string $resource)
     {
         $this->topic = $topic;
         $this->store = $store;
@@ -52,9 +52,9 @@ class WebhookEvent extends Event
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getResource(): array
+    public function getResource(): string
     {
         return $this->resource;
     }
