@@ -161,4 +161,84 @@ class MetafieldEndpoint extends AbstractEndpoint
         $request = new DeleteParams('/admin/api/' . $this->version . '/products/' . $productId . '/metafields/' . $metafieldId . '.json');
         $this->send($request);
     }
+
+    /**
+     * @param int   $orderId
+     * @param array $query
+     *
+     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     */
+    public function findOrderMetafields($orderId, array $query = [])
+    {
+        $request = new GetJson('/admin/orders/' . $orderId . '/metafields.json', $query);
+        $response = $this->sendPaged($request, 'metafields');
+
+        return $this->createCollection($response);
+    }
+
+    /**
+     * @param int $metafieldId
+     * @param int $orderId
+     *
+     * @return GenericResource
+     */
+    public function findOneOrderMetafield($metafieldId, $orderId)
+    {
+        $request = new GetJson('/admin/orders/'.$orderId.'/metafields/'.$metafieldId.'.json');
+        $response = $this->send($request);
+
+        return $this->createEntity($response->get('metafield'));
+    }
+
+    /**
+     * @param int $orderId
+     *
+     * @return int
+     */
+    public function countByOrder($orderId)
+    {
+        $request = new GetJson('/admin/orders/'.$orderId.'/metafields/count.json');
+        $response = $this->send($request);
+
+        return $response->get('count');
+    }
+
+    /**
+     * @param int             $orderId
+     * @param GenericResource $metafield
+     *
+     * @return \CodeCloud\Bundle\ShopifyBundle\Api\GenericResource
+     */
+    public function createOrderMetafield($orderId, GenericResource $metafield)
+    {
+        $request = new PostJson('/admin/orders/'.$orderId.'/metafields.json', ['metafield' => $metafield->toArray()]);
+        $response = $this->send($request);
+
+        return $this->createEntity($response->get('metafield'));
+    }
+
+    /**
+     * @param int                                                 $metafieldId
+     * @param int                                                 $orderId
+     * @param \CodeCloud\Bundle\ShopifyBundle\Api\GenericResource $metafield
+     *
+     * @return GenericResource
+     */
+    public function updateOrderMetafield($metafieldId, $orderId, GenericResource $metafield)
+    {
+        $request = new PutJson('/admin/orders/'.$orderId.'/metafields/'.$metafieldId.'.json', ['metafield' => $metafield->toArray()]);
+        $response = $this->send($request);
+
+        return $this->createEntity($response->get('metafield'));
+    }
+
+    /**
+     * @param int $metafieldId
+     * @param int $orderId
+     */
+    public function deleteOrderMetafield($metafieldId, $orderId)
+    {
+        $request = new DeleteParams('/admin/orders/'.$orderId.'/metafields/'.$metafieldId.'.json');
+        $this->send($request);
+    }
 }
