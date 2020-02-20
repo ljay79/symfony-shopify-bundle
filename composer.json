@@ -29,10 +29,10 @@
   },
   "scripts": {
     "test": [
-      "vendor/bin/phpunit"
+      "phpunit"
     ],
     "cs-fixer": [
-      "vendor/bin/php-cs-fixer fix ./src"
+      "php-cs-fixer fix ./src"
     ]
   }
 }
