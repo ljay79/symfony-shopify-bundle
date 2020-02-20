@@ -11,6 +11,8 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Response\HtmlResponse;
 use CodeCloud\Bundle\ShopifyBundle\Api\Response\JsonResponse;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Exception\GuzzleException;
+
 
 abstract class AbstractEndpoint
 {
@@ -25,12 +27,32 @@ abstract class AbstractEndpoint
     protected $version;
 
     /**
+     * Last response object
+     * @var JsonResponse|HtmlResponse|ErrorResponse|null
+     */
+    private $response;
+
+
+    /**
      * @param ClientInterface $client
      */
     public function __construct(ClientInterface $client, string $version)
     {
         $this->client = $client;
         $this->version = $version;
+    }
+
+    /**
+     * Return last response object if any.
+     * @return NULL|PsrResponse
+     */
+    public function getHttpResponse()
+    {
+        if ($this->response instanceof ResponseInterface) {
+            return $this->response->getHttpResponse();
+        }
+
+        return $this->response;
     }
 
     /**
@@ -43,7 +65,7 @@ abstract class AbstractEndpoint
         $response = $this->process($request);
 
         if (! $response->successful()) {
-            throw new FailedRequestException('Failed request. ' . $response->getHttpResponse()->getReasonPhrase());
+            throw new FailedRequestException('Failed request. ' . $response->getHttpResponse()->getReasonPhrase(), $response->getHttpResponse()->getStatusCode());
         }
 
         return $response;
@@ -107,9 +129,9 @@ abstract class AbstractEndpoint
      */
     protected function process(RequestInterface $request)
     {
-        $guzzleResponse = $this->client->send($request);
-
         try {
+            $guzzleResponse = $this->client->send($request);
+
             switch ($request->getHeaderLine('Content-type')) {
                 case 'application/json':
                     $response = new JsonResponse($guzzleResponse);
@@ -117,11 +139,16 @@ abstract class AbstractEndpoint
                 default:
                     $response = new HtmlResponse($guzzleResponse);
             }
+        } catch (GuzzleException $e) {
+            $guzzleResponse = $e->getResponse();
+            $response = new ErrorResponse($guzzleResponse, $e);
         } catch (ClientException $e) {
             $response = new ErrorResponse($guzzleResponse, $e);
         }
 
-        return $response;
+        $this->response = $response;
+
+        return $this->response;
     }
 
     /**
