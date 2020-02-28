@@ -9,6 +9,7 @@ use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
 
 class MetafieldEndpoint extends AbstractEndpoint
 {
+
     /**
      * @param array $query
      * @param array $links
@@ -241,4 +242,70 @@ class MetafieldEndpoint extends AbstractEndpoint
         $request = new DeleteParams('/admin/orders/'.$orderId.'/metafields/'.$metafieldId.'.json');
         $this->send($request);
     }
+
+    /**
+     * @param int $productId
+     * @param int $variantId
+     * @param array $query
+     * @param array $links
+     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     */
+    public function findVariantMetafields($productId, $variantId, array $query = array(), array &$links = array())
+    {
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants/' . $variantId . '/metafields.json', $query);
+        $response = $this->sendPaged($request, 'metafields', $links);
+        return $this->createCollection($response);
+    }
+
+    /**
+     * @param int $metafieldId
+     * @param int $productId
+     * @param int $variantId
+     * @return GenericResource
+     */
+    public function findOneVariantMetafield($metafieldId, $productId, $variantId)
+    {
+        $request = new GetJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants/' . $variantId . '/metafields/' . $metafieldId . '.json');
+        $response = $this->send($request);
+        return $this->createEntity($response->get('metafield'));
+    }
+
+    /**
+     * @param int $productId
+     * @param int $variantId
+     * @param GenericResource $metafield
+     * @return \CodeCloud\Bundle\ShopifyBundle\Api\GenericResource
+     */
+    public function createVariantMetafield($productId, $variantId, GenericResource $metafield)
+    {
+        $request = new PostJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants/' . $variantId . '/metafields.json', array('metafield' => $metafield->toArray()));
+        $response = $this->send($request);
+        return $this->createEntity($response->get('metafield'));
+    }
+
+    /**
+     * @param int $metafieldId
+     * @param int $productId
+     * @param int $variantId
+     * @param \CodeCloud\Bundle\ShopifyBundle\Api\GenericResource $metafield
+     * @return GenericResource
+     */
+    public function updateVariantMetafield($metafieldId, $productId, $variantId, GenericResource $metafield)
+    {
+        $request = new PutJson('/admin/api/' . $this->version . '/products/' . $productId . '/variants/' . $variantId . '/metafields/' . $metafieldId . '.json', array('metafield' => $metafield->toArray()));
+        $response = $this->send($request);
+        return $this->createEntity($response->get('metafield'));
+    }
+
+    /**
+     * @param int $metafieldId
+     * @param int $productId
+     * @param int $variantId
+     */
+    public function deleteVariantMetafield($metafieldId, $productId, $variantId)
+    {
+        $request = new DeleteParams('/admin/api/' . $this->version . '/products/' . $productId . '/variants/' . $variantId . '/metafields/' . $metafieldId . '.json');
+        $this->send($request);
+    }
+
 }
