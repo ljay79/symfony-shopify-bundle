@@ -55,7 +55,7 @@ services:
       arguments:
           - "@codecloud_shopify.store_manager"
           - "@codecloud_shopify.http.client_factory"
-          - "2021-10"
+          - "2023-01"
 
   codecloud_shopify.signer:
       public: false
